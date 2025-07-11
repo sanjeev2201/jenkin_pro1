@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.8.10'
+        }
+    }
 
     stages {
         stage('Clone Repo') {
@@ -12,7 +16,7 @@ pipeline {
         stage('Set Up Environment') {
             steps {
                 sh '''
-                    python3 -m virtualenv .jenkinenv
+                    virtualenv .jenkinenv
                     source .jenkinenv/bin/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
