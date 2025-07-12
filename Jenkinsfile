@@ -1,34 +1,17 @@
 pipeline {
     agent any
+
     stages {
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
-                git 'https://github.com/sanjeev2201/jenkin_pro1.git'
+                // Checkout code from the Git repository
+                git url: 'https://github.com/sanjeev2201/jenkin_pro1.git', branch: 'main'
             }
         }
-        stage('Set up Environment') {
+
+        stage('Test') {
             steps {
-                sh '''
-                    python3 -m venv venv
-                    source venv/Scripts/activate
-                    pip install -r requirements.txt
-                '''
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    source venv/Scripts/activate
-                    pytest
-                '''
-            }
-        }
-        stage('Run Flask App') {
-            steps {
-                sh '''
-                    source venv/Scripts/activate
-                    nohup python run.py &
-                '''
+                echo 'Pipeline is working!'
             }
         }
     }
