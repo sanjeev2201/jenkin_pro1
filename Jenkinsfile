@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/sanjeev2201/jenkin_pro1.git'
+                git 'https://github.com/sanjeev2201/jenkin_pro1.git', branch: 'main'
             }
         }
         stage('Set up Environment') {
