@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        FLASK_APP = 'app.py'
+        FLASK_APP = 'run.py'
         FLASK_ENV = 'development'
         // Optional: Define a Python virtual environment name
         VENV_DIR = 'env'
@@ -17,17 +17,18 @@ pipeline {
 
         stage('Set up Python') {
             steps {
-                sh 'python3 --version'
-                sh 'python3 -m venv $VENV_DIR'
-                sh '. $VENV_DIR/bin/activate && pip install --upgrade pip'
-                sh '. $VENV_DIR/bin/activate && pip install -r requirements.txt'
+               which python3 || which python
+                    python3 -m venv $VENV_DIR
+                    . $VENV_DIR/Scripts/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
             }
         }
 
         stage('Run Flask App') {
             steps {
                 sh '''
-                    . $VENV_DIR/bin/activate
+                    . $VENV_DIR/Scripts/activate
                     flask run --host=0.0.0.0 --port=5000 &
                     sleep 5
                     curl http://localhost:5000 || echo "Flask app is not reachable"
