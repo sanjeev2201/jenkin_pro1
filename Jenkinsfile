@@ -1,16 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.12.10'
-        }
-    }
-
-    environment {
-        FLASK_APP = 'run.py'
-        FLASK_ENV = 'development'
-        // Optional: Define a Python virtual environment name
-        VENV_DIR = 'env'
-    }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -19,13 +8,22 @@ pipeline {
             }
         }
 
-        stage('Set up Python') {
+        stage('Show Git Info') {
             steps {
-              sh '''#!/bin/bash
-                    python3 -m venv ${VENV_DIR}
-                    source ${VENV_DIR}/Scripts/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                sh '''
+                    echo "Listing files..."
+                    ls -a
+                    echo "Git last commit:"
+                    git log -1
+                '''
+            }
+        }
+
+        stage('Install Requirements') {
+            steps {
+                sh '''
+                    python3 --version
+                    pip3 install -r requirements.txt
                 '''
             }
         }
@@ -33,10 +31,9 @@ pipeline {
         stage('Run Flask App') {
             steps {
                 sh '''
-                   source ${VENV_DIR}/Scripts/activate
-                    flask run --host=0.0.0.0 --port=5000 &
+                    nohup python3 run.py &
                     sleep 5
-                    curl http://localhost:5000 || echo "Flask app is not reachable"
+                    curl http://localhost:5000 || echo "Flask app not reachable"
                 '''
             }
         }
@@ -44,8 +41,8 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up...'
-            sh 'pkill -f flask || true'
+            echo "Cleaning up"
+            sh "pkill -f run.py || true"
         }
     }
 }
