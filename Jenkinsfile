@@ -1,48 +1,35 @@
 pipeline {
     agent any
-
     stages {
-        stage('Checkout') {
+        stage('Clone Repo') {
             steps {
-                git url: 'https://github.com/sanjeev2201/jenkin_pro1.git', branch: 'main'
+                git 'https://github.com/sanjeev2201/jenkin_pro1.git'
             }
         }
-
-        stage('Show Git Info') {
+        stage('Set up Environment') {
             steps {
                 sh '''
-                    echo "Listing files..."
-                    ls -a
-                    echo "Git last commit:"
-                    git log -1
+                    python3 -m venv venv
+                    source venv/Scripts/activate
+                    pip install -r requirements.txt
                 '''
             }
         }
-
-        stage('Install Requirements') {
+        stage('Run Tests') {
             steps {
                 sh '''
-                    python3 --version
-                    pip3 install -r requirements.txt
+                    source venv/Scripts/activate
+                    pytest
                 '''
             }
         }
-
         stage('Run Flask App') {
             steps {
                 sh '''
-                    nohup python3 run.py &
-                    sleep 5
-                    curl http://localhost:5000 || echo "Flask app not reachable"
+                    source venv/Scripts/activate
+                    nohup python run.py &
                 '''
             }
-        }
-    }
-
-    post {
-        always {
-            echo "Cleaning up"
-            sh "pkill -f run.py || true"
         }
     }
 }
