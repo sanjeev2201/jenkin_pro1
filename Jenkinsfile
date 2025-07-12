@@ -17,18 +17,19 @@ pipeline {
 
         stage('Set up Python') {
             steps {
-               which python3 || which python
-                    python3 -m venv $VENV_DIR
-                    . $VENV_DIR/Scripts/activate
+              sh '''#!/bin/bash
+                    python3 -m venv ${VENV_DIR}
+                    source ${VENV_DIR}/Scripts/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run Flask App') {
             steps {
                 sh '''
-                    . $VENV_DIR/Scripts/activate
+                   source ${VENV_DIR}/Scripts/activate
                     flask run --host=0.0.0.0 --port=5000 &
                     sleep 5
                     curl http://localhost:5000 || echo "Flask app is not reachable"
