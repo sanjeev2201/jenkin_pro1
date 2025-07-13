@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+    agent {
+    docker {
+      image 'python:3.12.10'
+    }
+  }
   stages {
     stage('Clone Repo') {
       steps {
@@ -8,13 +12,13 @@ pipeline {
     }
     stage('Install Python Packages') {
       steps {
-        sh 'python3 --version'
-        sh 'pip3 install -r jenkin_pro1/requirements.txt'
+        sh 'python --version'
+        sh 'pip install -r requirements.txt'
       }
     }
     stage('Run Flask App') {
       steps {
-        sh 'python3 jenkin_pro1/run.py'
+        sh 'python run.py'
       }
     }
   }
