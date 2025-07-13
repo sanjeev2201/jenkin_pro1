@@ -9,6 +9,7 @@ pipeline {
         }
         stage('Clone Repo') {
             steps {
+                sh 'rm -rf jenkin_pro1'
                 sh 'git clone https://github.com/sanjeev2201/jenkin_pro1.git'
             }
         }
