@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+        agent {
+        docker {
+            image 'python:3.12.10'
+        }
+    }
     stages {
         stage('Check Docker') {
             steps {
