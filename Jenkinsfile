@@ -1,7 +1,11 @@
 pipeline {
-    agent {
-    docker {
-      image 'python:3.12.10'
+    agent any
+  stages {
+    stage('Check Docker') {
+      steps {
+        sh 'docker --version'
+        sh 'docker ps'
+      }
     }
   }
   stages {
