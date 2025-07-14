@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.12.10'  // or use your custom image
+            image 'python:3.8.10'  // or use your custom image
         }
     }
     stages {
