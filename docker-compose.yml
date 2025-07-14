@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  flask-app:
+    build: .
+    ports:
+      - "5001:5000"
+    depends_on:
+      - mysql
+    environment:
+      - FLASK_ENV=development
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    user: root
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+
+volumes:
+  mysql_data:
+  jenkins_home:

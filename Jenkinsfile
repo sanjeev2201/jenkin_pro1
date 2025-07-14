@@ -14,13 +14,24 @@ pipeline {
         stage('Install Python Packages') {
             steps {
                 sh 'python3 --version'
-                sh 'pip3 install -r jenkin_pro1/requirements.txt'
+                sh 'pip3 install -r requirements.txt'
             }
         }
-        stage('Run Flask App') {
+
+        stage('Unit Tests') {
             steps {
-                sh 'python3 jenkin_pro1/run.py'
+                // sh 'python app/test_app.py'
+                sh'python tests/test.py'
             }
         }
+
+        stage('Docker Build & Run') {
+            steps {
+                sh 'docker build -t flask-ci-app .'
+                sh 'docker-compose up -d'
+            }
+        }
+    
+
     }
 }
